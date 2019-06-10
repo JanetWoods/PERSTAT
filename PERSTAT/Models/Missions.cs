@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PERSTAT.Models.ViewModels;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,6 +28,8 @@ namespace PERSTAT.Models
         public ICollection Assignments { get; set; }
 
         public ICollection<People> People { get; set; }
+
+        public ICollection<CountyMissions> CountyMissions { get; set; }
 
     }
 }

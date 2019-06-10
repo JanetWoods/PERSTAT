@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PERSTAT.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +14,8 @@ namespace PERSTAT.Models
         public int StateId { get; set; }
         public States State { get; set; }
 
-   
+        public ICollection<CountyMissions> CountyMissions { get; set; }
+
 
     }
 }
