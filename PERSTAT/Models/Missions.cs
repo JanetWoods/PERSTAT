@@ -10,6 +10,9 @@ namespace PERSTAT.Models
 {
     public class Missions
     {
+      
+        [Key]
+        [Required]
         public int MissionId { get; set; }
 
         public string MissionTitle { get; set; }
@@ -25,7 +28,7 @@ namespace PERSTAT.Models
         [Display(Name ="MissionPOC")]
         public People MissionPOC { get; set; }
 
-        public ICollection Assignments { get; set; }
+        public ICollection<Assignment> Assignments { get; set; }
 
         public ICollection<People> People { get; set; }
 
