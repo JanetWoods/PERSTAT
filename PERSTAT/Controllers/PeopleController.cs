@@ -48,9 +48,21 @@ namespace PERSTAT.Controllers
         }
 
         // GET: People/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int? id)
         {
-            return View();
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var person = await _context.People
+                .Include(p => p.Status)
+                .Include(p => p.Organization)
+                .FirstAsync(p => p.Id == id);
+            if (person == null)
+            {
+                return NotFound();
+            }
+            return View(person);
         }
 
         // GET: People/Create
