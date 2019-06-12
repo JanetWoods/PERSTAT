@@ -91,43 +91,87 @@ namespace PERSTAT.Controllers
             }
         }
 
-        // GET: People/Edit/5
-        public ActionResult Edit(int id)
+        // GET: People/Edit
+        public async Task<ActionResult> Edit(int? id)
         {
-            return View();
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var person = await _context.People.FindAsync(id);
+            if(person == null)
+            {
+                return NotFound();
+            }
+            ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "OrganizationName", person.OrganizationId);
+            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "StatusName", person.StatusId);
+            return View(person);
         }
 
         // POST: People/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, Title, NameFirst, NameMiddle, NameLast, StatusId, OrganizationId, POCforOrganization")]People person)
         {
-            try
+            if (id != person.Id)
             {
-                // TODO: Add update logic here
-
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(person);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PersonExists(person.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganiztionId", "Label", person.OrganizationId);
+            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "Label", person.StatusId);
+                return View(person);
         }
-
-        // GET: People/Delete/5
-        public ActionResult Delete(int id)
+               
+            // GET: People/Delete/5
+            public async Task<IActionResult> Delete(int? id)
         {
-            return View();
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var person = await _context.People
+                // .Include(p => p.Organization)
+                //.Include(p => p.Assignments)
+                //.Include(p => p.Status)
+
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if(person ==null)
+            {
+                return NotFound();
+            }
+            return View(person);
         }
 
         // POST: People/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                var person = await _context.People.FindAsync(id);
+                _context.People.Remove(person);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -135,6 +179,11 @@ namespace PERSTAT.Controllers
             {
                 return View();
             }
+
+        }
+        private bool PersonExists(int id)
+        {
+            return _context.People.Any(e => e.Id == id);
         }
     }
 }
