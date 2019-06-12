@@ -19,18 +19,7 @@ namespace PERSTAT.Models
 
         public string MissionDescription { get; set; }
 
-        public int LocatioId { get; set; }
-        public Locations Location { get; set; }
-
-        [Display(Name = "Mission POC Id")]
-        public int PeopleId { get; set; }
-
-        [Display(Name ="MissionPOC")]
-        public People MissionPOC { get; set; }
-
         public ICollection<Assignment> Assignments { get; set; }
-
-        public ICollection<People> People { get; set; }
 
         public ICollection<CountyMissions> CountyMissions { get; set; }
 

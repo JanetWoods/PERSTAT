@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PERSTAT.Data;
 
 namespace PERSTAT.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190612162031_eight")]
+    partial class eight
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -302,9 +304,13 @@ namespace PERSTAT.Data.Migrations
 
                     b.Property<string>("MissionTitle");
 
+                    b.Property<int>("PeopleId");
+
                     b.HasKey("MissionId");
 
                     b.HasIndex("LocationsLocationId");
+
+                    b.HasIndex("PeopleId");
 
                     b.ToTable("Missions");
                 });
@@ -317,11 +323,13 @@ namespace PERSTAT.Data.Migrations
 
                     b.Property<string>("City");
 
+                    b.Property<string>("OrgainzationStreet2");
+
                     b.Property<string>("OrganizationName");
 
                     b.Property<string>("OrganizationStreet1");
 
-                    b.Property<string>("OrganizationStreet2");
+                    b.Property<int>("PeopleId");
 
                     b.Property<int>("StateId");
 
@@ -338,6 +346,8 @@ namespace PERSTAT.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("MissionsMissionId");
+
                     b.Property<string>("NameFirst");
 
                     b.Property<string>("NameLast");
@@ -346,11 +356,15 @@ namespace PERSTAT.Data.Migrations
 
                     b.Property<int>("OrganizationId");
 
+                    b.Property<bool>("POCforOrganization");
+
                     b.Property<int>("StatusId");
 
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MissionsMissionId");
 
                     b.HasIndex("OrganizationId");
 
@@ -465,7 +479,7 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("PERSTAT.Models.Assignment", b =>
@@ -473,22 +487,22 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.Incident", "Incident")
                         .WithMany("Assignments")
                         .HasForeignKey("IncidentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PERSTAT.Models.Locations", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PERSTAT.Models.Missions", "Mission")
                         .WithMany("Assignments")
                         .HasForeignKey("MissionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PERSTAT.Models.People", "People")
+                    b.HasOne("PERSTAT.Models.People", "Person")
                         .WithMany("Assignments")
                         .HasForeignKey("PeopleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("PERSTAT.Models.Counties", b =>
@@ -496,7 +510,7 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.States", "State")
                         .WithMany("Counties")
                         .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("PERSTAT.Models.Incident", b =>
@@ -504,7 +518,7 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.IncidentType", "Type")
                         .WithMany("Incidents")
                         .HasForeignKey("IncidentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("PERSTAT.Models.Locations", b =>
@@ -512,12 +526,12 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.Counties", "County")
                         .WithMany()
                         .HasForeignKey("CountyId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PERSTAT.Models.States", "State")
                         .WithMany("Locations")
                         .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("PERSTAT.Models.Missions", b =>
@@ -525,6 +539,11 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.Locations")
                         .WithMany("Missions")
                         .HasForeignKey("LocationsLocationId");
+
+                    b.HasOne("PERSTAT.Models.People", "MissionPOC")
+                        .WithMany()
+                        .HasForeignKey("PeopleId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("PERSTAT.Models.Organization", b =>
@@ -532,20 +551,24 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.States", "State")
                         .WithMany("Organizations")
                         .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("PERSTAT.Models.People", b =>
                 {
+                    b.HasOne("PERSTAT.Models.Missions")
+                        .WithMany("People")
+                        .HasForeignKey("MissionsMissionId");
+
                     b.HasOne("PERSTAT.Models.Organization", "Organization")
                         .WithMany("People")
                         .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PERSTAT.Models.Status", "Status")
                         .WithMany("People")
                         .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("PERSTAT.Models.ViewModels.CountyMissions", b =>
@@ -553,12 +576,12 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.Counties", "County")
                         .WithMany("CountyMissions")
                         .HasForeignKey("CountyId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PERSTAT.Models.Missions", "Mission")
                         .WithMany("CountyMissions")
                         .HasForeignKey("MissionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PERSTAT.Data;
 
 namespace PERSTAT.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190612170936_fifteen")]
+    partial class fifteen
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,11 +319,11 @@ namespace PERSTAT.Data.Migrations
 
                     b.Property<string>("City");
 
+                    b.Property<string>("OrgainzationStreet2");
+
                     b.Property<string>("OrganizationName");
 
                     b.Property<string>("OrganizationStreet1");
-
-                    b.Property<string>("OrganizationStreet2");
 
                     b.Property<int>("StateId");
 
@@ -345,6 +347,8 @@ namespace PERSTAT.Data.Migrations
                     b.Property<string>("NameMiddle");
 
                     b.Property<int>("OrganizationId");
+
+                    b.Property<bool>("POCforOrganization");
 
                     b.Property<int>("StatusId");
 
@@ -538,7 +542,7 @@ namespace PERSTAT.Data.Migrations
             modelBuilder.Entity("PERSTAT.Models.People", b =>
                 {
                     b.HasOne("PERSTAT.Models.Organization", "Organization")
-                        .WithMany("People")
+                        .WithMany("Peoples")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade);
 

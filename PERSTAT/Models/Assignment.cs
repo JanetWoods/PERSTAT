@@ -14,7 +14,7 @@ namespace PERSTAT.Models
        
         public int PeopleId { get; set; }
 
-        public People Person { get; set; }
+        public People People { get; set; }
 
         public int MissionId { get; set; }
 
@@ -24,9 +24,10 @@ namespace PERSTAT.Models
         public DateTime DateEnd { get; set; }
 
         public int IncidentId { get; set; }
-
         public Incident Incident { get; set; }
 
+        public int LocationId { get; set; }
+        public Locations Location { get; set; }
     
 
     }

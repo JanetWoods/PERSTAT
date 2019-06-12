@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PERSTAT.Data;
 
 namespace PERSTAT.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190612164123_eleven")]
+    partial class eleven
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,11 +319,13 @@ namespace PERSTAT.Data.Migrations
 
                     b.Property<string>("City");
 
+                    b.Property<string>("OrgainzationStreet2");
+
                     b.Property<string>("OrganizationName");
 
                     b.Property<string>("OrganizationStreet1");
 
-                    b.Property<string>("OrganizationStreet2");
+                    b.Property<int>("PeopleId");
 
                     b.Property<int>("StateId");
 
@@ -338,6 +342,10 @@ namespace PERSTAT.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AssignmentId");
+
+                    b.Property<int?>("MissionsMissionId");
+
                     b.Property<string>("NameFirst");
 
                     b.Property<string>("NameLast");
@@ -346,11 +354,15 @@ namespace PERSTAT.Data.Migrations
 
                     b.Property<int>("OrganizationId");
 
+                    b.Property<bool>("POCforOrganization");
+
                     b.Property<int>("StatusId");
 
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MissionsMissionId");
 
                     b.HasIndex("OrganizationId");
 
@@ -485,7 +497,7 @@ namespace PERSTAT.Data.Migrations
                         .HasForeignKey("MissionId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("PERSTAT.Models.People", "People")
+                    b.HasOne("PERSTAT.Models.People", "Person")
                         .WithMany("Assignments")
                         .HasForeignKey("PeopleId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -537,6 +549,10 @@ namespace PERSTAT.Data.Migrations
 
             modelBuilder.Entity("PERSTAT.Models.People", b =>
                 {
+                    b.HasOne("PERSTAT.Models.Missions")
+                        .WithMany("People")
+                        .HasForeignKey("MissionsMissionId");
+
                     b.HasOne("PERSTAT.Models.Organization", "Organization")
                         .WithMany("People")
                         .HasForeignKey("OrganizationId")
