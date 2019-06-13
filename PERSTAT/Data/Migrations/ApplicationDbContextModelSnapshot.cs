@@ -292,19 +292,15 @@ namespace PERSTAT.Data.Migrations
 
             modelBuilder.Entity("PERSTAT.Models.Missions", b =>
                 {
-                    b.Property<int>("MissionId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("LocationsLocationId");
 
                     b.Property<string>("MissionDescription");
 
                     b.Property<string>("MissionTitle");
 
-                    b.HasKey("MissionId");
-
-                    b.HasIndex("LocationsLocationId");
+                    b.HasKey("Id");
 
                     b.ToTable("Missions");
                 });
@@ -520,14 +516,7 @@ namespace PERSTAT.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("PERSTAT.Models.Missions", b =>
-                {
-                    b.HasOne("PERSTAT.Models.Locations")
-                        .WithMany("Missions")
-                        .HasForeignKey("LocationsLocationId");
-                });
-
-            modelBuilder.Entity("PERSTAT.Models.Organization", b =>
+                     modelBuilder.Entity("PERSTAT.Models.Organization", b =>
                 {
                     b.HasOne("PERSTAT.Models.States", "State")
                         .WithMany("Organizations")
@@ -556,7 +545,7 @@ namespace PERSTAT.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("PERSTAT.Models.Missions", "Mission")
-                        .WithMany("CountyMissions")
+                        .WithMany()
                         .HasForeignKey("MissionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PERSTAT.Data;
 using PERSTAT.Models;
@@ -19,9 +21,10 @@ namespace PERSTAT.Controllers
 
         private readonly IConfiguration _config;
 
-        public MissionsController(IConfiguration config)
+        public MissionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _config = config;
+            _userManager = userManager;
+            _context = context;
         }
 
         public SqlConnection Connection
@@ -34,9 +37,11 @@ namespace PERSTAT.Controllers
 
 
         // GET: Missions
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var applicationDbContext = _context.Missions
+            .Include(m => m.Assignments);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Missions/Details/5
@@ -46,6 +51,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Missions/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -54,18 +60,15 @@ namespace PERSTAT.Controllers
         // POST: Missions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> CreateAsync([Bind("MissionTitle, MissionDescription")]Missions mission)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
+                _context.Add(mission);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(mission);
         }
 
         // GET: Missions/Edit/5

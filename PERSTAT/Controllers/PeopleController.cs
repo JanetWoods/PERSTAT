@@ -66,9 +66,11 @@ namespace PERSTAT.Controllers
         }
 
         // GET: People/Create
+        [Authorize]
         public IActionResult Create()
         {
-            ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "Label");
+            ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "OrganizationName");
+            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "StatusName");
 
             return View();
         }
@@ -76,19 +78,16 @@ namespace PERSTAT.Controllers
         // POST: People/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> CreateAsync([Bind("Title, NameFirst, NameMiddle, NameLast, StatusId, OrganizationId, POCforOrganization")] People person)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
+                _context.Add(person);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(person);
+
         }
 
         // GET: People/Edit
