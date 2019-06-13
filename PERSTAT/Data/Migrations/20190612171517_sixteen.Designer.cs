@@ -298,16 +298,12 @@ namespace PERSTAT.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("LocationsLocationId");
-
                     b.Property<string>("MissionDescription");
 
                     b.Property<string>("MissionTitle");
 
                     b.HasKey("MissionId");
-
-                    b.HasIndex("LocationsLocationId");
-
+                    
                     b.ToTable("Missions");
                 });
 
@@ -522,13 +518,7 @@ namespace PERSTAT.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("PERSTAT.Models.Missions", b =>
-                {
-                    b.HasOne("PERSTAT.Models.Locations")
-                        .WithMany("Missions")
-                        .HasForeignKey("LocationsLocationId");
-                });
-
+            
             modelBuilder.Entity("PERSTAT.Models.Organization", b =>
                 {
                     b.HasOne("PERSTAT.Models.States", "State")

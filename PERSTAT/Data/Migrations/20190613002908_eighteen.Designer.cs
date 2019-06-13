@@ -10,8 +10,8 @@ using PERSTAT.Data;
 namespace PERSTAT.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190612170516_fourteen")]
-    partial class fourteen
+    [Migration("20190613002908_eighteen")]
+    partial class eighteen
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -315,11 +315,11 @@ namespace PERSTAT.Data.Migrations
 
                     b.Property<string>("City");
 
-                    b.Property<string>("OrgainzationStreet2");
-
                     b.Property<string>("OrganizationName");
 
                     b.Property<string>("OrganizationStreet1");
+
+                    b.Property<string>("OrganizationStreet2");
 
                     b.Property<int>("StateId");
 
@@ -343,8 +343,6 @@ namespace PERSTAT.Data.Migrations
                     b.Property<string>("NameMiddle");
 
                     b.Property<int>("OrganizationId");
-
-                    b.Property<bool>("POCforOrganization");
 
                     b.Property<int>("StatusId");
 
@@ -520,7 +518,6 @@ namespace PERSTAT.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
- 
             modelBuilder.Entity("PERSTAT.Models.Organization", b =>
                 {
                     b.HasOne("PERSTAT.Models.States", "State")

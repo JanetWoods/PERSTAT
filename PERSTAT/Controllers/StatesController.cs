@@ -28,10 +28,7 @@ namespace PERSTAT.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-       
-
-
-        // GET: States
+       // GET: States
         public async Task<ActionResult> Index()
         {
             var applicationDbContext = _context.States

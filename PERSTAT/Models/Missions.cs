@@ -13,15 +13,17 @@ namespace PERSTAT.Models
       
         [Key]
         [Required]
-        public int MissionId { get; set; }
+        public int Id { get; set; }
 
+        [Display(Name = "Mission")]
         public string MissionTitle { get; set; }
 
+        [Display(Name ="Description")]
         public string MissionDescription { get; set; }
 
         public ICollection<Assignment> Assignments { get; set; }
 
-        public ICollection<CountyMissions> CountyMissions { get; set; }
+        //public ICollection<CountyMissions> CountyMissions { get; set; }
 
     }
 }

@@ -298,8 +298,6 @@ namespace PERSTAT.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("LocationsLocationId");
-
                     b.Property<string>("MissionDescription");
 
                     b.Property<string>("MissionTitle");
@@ -307,8 +305,6 @@ namespace PERSTAT.Data.Migrations
                     b.Property<int>("PeopleId");
 
                     b.HasKey("MissionId");
-
-                    b.HasIndex("LocationsLocationId");
 
                     b.HasIndex("PeopleId");
 
@@ -536,10 +532,6 @@ namespace PERSTAT.Data.Migrations
 
             modelBuilder.Entity("PERSTAT.Models.Missions", b =>
                 {
-                    b.HasOne("PERSTAT.Models.Locations")
-                        .WithMany("Missions")
-                        .HasForeignKey("LocationsLocationId");
-
                     b.HasOne("PERSTAT.Models.People", "MissionPOC")
                         .WithMany()
                         .HasForeignKey("PeopleId")

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PERSTAT.Data;
 using PERSTAT.Models;
@@ -19,9 +20,12 @@ namespace PERSTAT.Controllers
 
         private readonly IConfiguration _config;
 
-        public OrganizationController(IConfiguration config)
+        public OrganizationController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
-            _config = config;
+            _userManager = userManager;
+            _context = context;
+
         }
 
         public SqlConnection Connection
@@ -34,9 +38,12 @@ namespace PERSTAT.Controllers
 
 
         // GET: Organization
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View();
+            var applicationDbContext = _context.Organization
+                .Include(p => p.State)
+                .Include(p => p.People);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Organization/Details/5

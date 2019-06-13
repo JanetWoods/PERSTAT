@@ -16,10 +16,12 @@ namespace PERSTAT.Models
 
         public string Title { get; set; }
 
+        [Display(Name ="First")]
         public string NameFirst { get; set; }
 
+        [Display(Name ="Middle")]
         public string NameMiddle { get; set; }
-
+        [Display(Name ="Last")]
         public string NameLast { get; set; }
 
         public int StatusId { get; set; }
