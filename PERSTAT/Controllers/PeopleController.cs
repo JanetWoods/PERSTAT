@@ -150,9 +150,9 @@ namespace PERSTAT.Controllers
                 return NotFound();
             }
             var person = await _context.People
-                // .Include(p => p.Organization)
-                //.Include(p => p.Assignments)
-                //.Include(p => p.Status)
+                 .Include(p => p.Organization)
+                .Include(p => p.Assignments)
+                .Include(p => p.Status)
 
                 .FirstOrDefaultAsync(p => p.Id == id);
             if(person ==null)

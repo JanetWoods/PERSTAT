@@ -60,7 +60,7 @@ namespace PERSTAT.Controllers
         // POST: Missions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync([Bind("MissionTitle, MissionDescription")]Missions mission)
+        public async Task<ActionResult> Create([Bind("MissionTitle, MissionDescription")]Missions mission)
         {
             if (ModelState.IsValid)
             {

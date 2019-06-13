@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.City)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.State)
+                @Html.DisplayNameFor(model => model.State.StateShort)
             </th>
             <th></th>
         </tr>
@@ -46,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.City)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.State.StateId)
+                @Html.DisplayFor(modelItem => item.State.StateShort)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.OrganizationId">Edit</a> |
