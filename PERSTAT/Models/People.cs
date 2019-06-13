@@ -28,13 +28,11 @@ namespace PERSTAT.Models
 
         public int OrganizationId { get; set; }
         public Organization Organization { get; set; }
-        public bool POCforOrganization { get; set; }
 
         public ICollection<Assignment> Assignments { get; set; }
 
-      
 
-    
+
     }
 
 }
