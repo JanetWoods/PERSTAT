@@ -12,8 +12,10 @@ namespace PERSTAT.Models
         [Required]
         public int StateId { get; set; }
 
+        [Display(Name = "State")]
         public string StateShort { get; set; }
 
+        [Display(Name = "State")]
         public string StateName { get; set; }
 
         public ICollection<Counties> Counties { get; set; }

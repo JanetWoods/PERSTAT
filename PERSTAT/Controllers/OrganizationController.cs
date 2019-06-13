@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PERSTAT.Data;
@@ -42,32 +43,40 @@ namespace PERSTAT.Controllers
         {
             var applicationDbContext = _context.Organization
                 .Include(p => p.State)
-                .Include(p => p.People);
-            return View(await applicationDbContext.ToListAsync());
+                .Include(p => p.People)
+                .OrderBy(p => p.OrganizationName);
+              return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Organization/Details/5
         public ActionResult Details(int id)
         {
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateShort");
             return View();
         }
 
         // GET: Organization/Create
         public ActionResult Create()
         {
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
             return View();
         }
 
         // POST: Organization/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create([Bind("OrganizationName, OrganizationStreet1, OrganizationStreet2, City, StateId")]Organization organization)
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+               if(ModelState.IsValid)
+                {
+                    _context.Add(organization);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
+                return View(organization);
             }
             catch
             {

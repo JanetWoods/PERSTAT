@@ -20,8 +20,9 @@ namespace PERSTAT.Models
         public string OrganizationStreet2 { get; set; }
 
         public string City { get; set; }
-
         public int StateId { get; set; }
+
+        [Display(Name = "State")]
         public States State { get; set; }
 
         public ICollection<People> People { get; set; }
