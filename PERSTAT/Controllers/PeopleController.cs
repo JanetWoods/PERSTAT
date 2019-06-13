@@ -71,14 +71,13 @@ namespace PERSTAT.Controllers
         {
             ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "OrganizationName");
             ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "StatusName");
-
-            return View();
+           return View();
         }
 
         // POST: People/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync([Bind("Title, NameFirst, NameMiddle, NameLast, StatusId, OrganizationId, POCforOrganization")] People person)
+        public async Task<ActionResult> Create([Bind("Title, NameFirst, NameMiddle, NameLast, StatusId, OrganizationId, POCforOrganization")] People person)
         {
             if (ModelState.IsValid)
             {
@@ -86,6 +85,8 @@ namespace PERSTAT.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "Label", person.OrganizationId);
+            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "Label", person.StatusId);
             return View(person);
 
         }
