@@ -22,8 +22,8 @@ namespace PERSTAT.Models
         public string MissionDescription { get; set; }
 
         public ICollection<Assignment> Assignments { get; set; }
+        public ICollection<CountyMissions> CountyMissions { get; set; }
 
-        //public ICollection<CountyMissions> CountyMissions { get; set; }
-
+        
     }
 }

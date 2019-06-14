@@ -72,26 +72,51 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Missions/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int? id)
         {
-            return View();
-        }
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var mission = await _context.Missions.FindAsync(id);
+            if (mission== null)
+            {
+                return NotFound();
+            }
+            return View(mission);
+            }
 
         // POST: Missions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> EditAsync(int id, [Bind("Id, MissionTitle, MissionDescription")] Missions mission)
         {
-            try
+            if(id != mission.Id)
             {
-                // TODO: Add update logic here
+                return NotFound();
+            }
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(mission);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MissionExists(mission.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(mission);
         }
 
         // GET: Missions/Delete/5
@@ -115,6 +140,11 @@ namespace PERSTAT.Controllers
             {
                 return View();
             }
+        }
+
+        private bool MissionExists(int id)
+        {
+            return _context.Missions.Any(e => e.Id == id);
         }
     }
 }
