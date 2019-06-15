@@ -7,9 +7,7 @@ namespace PERSTAT.Data.Migrations
    
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "LocationsLocationId",
-                table: "Missions");
+           
         }
 
 

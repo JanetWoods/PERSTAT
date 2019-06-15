@@ -44,7 +44,8 @@ namespace PERSTAT.Controllers
             var applicationDbContext = _context.Organization
                 .Include(p => p.State)
                 .Include(p => p.People)
-                .OrderBy(p => p.OrganizationName);
+                .OrderBy(p => p.OrganizationName)
+                .ThenBy(p => p.State.StateShort);
               return View(await applicationDbContext.ToListAsync());
         }
 
@@ -108,19 +109,32 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Organization/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var org = await _context.Organization
+                .FirstOrDefaultAsync(s => s.OrganizationId == id);
+            if (org == null)
+            {
+                return NotFound();
+            }
+            return View(org);
         }
 
+
         // POST: Organization/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int OrganizationId)
         {
             try
             {
-                // TODO: Add delete logic here
+                var org = await _context.Organization.FindAsync(OrganizationId);
+                _context.Organization.Remove(org);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }

@@ -10,12 +10,14 @@ namespace PERSTAT.Models
     {
         [Key]
         [Required]
-        public int StatusId { get; set; }
+        public int Id { get; set; }
 
         public string StatusName { get; set; }
 
         public string StatusDescription { get; set; }
 
         public ICollection<People> People { get; set; }
+
+        public ICollection<Assignment> Assignments { get; set; }
     }
 }

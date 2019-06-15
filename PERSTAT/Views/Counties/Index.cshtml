@@ -1,22 +1,22 @@
-﻿@model IEnumerable<PERSTAT.Models.Missions>
+﻿@model IEnumerable<PERSTAT.Models.Counties>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Missions</h1>
+<h1>Counties</h1>
 
 <p>
-    <a asp-action="Create">Add A New Mission</a>
+    <a asp-action="Create">Add a County</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.MissionTitle)
+                @Html.DisplayNameFor(model => model.CountyName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MissionDescription)
+                @Html.DisplayNameFor(model => model.State)
             </th>
             <th></th>
         </tr>
@@ -25,22 +25,15 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.MissionTitle)
+                @Html.DisplayFor(modelItem => item.CountyName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MissionDescription)
+                @Html.DisplayFor(modelItem => item.State.StateName)
             </td>
-
             <td>
-
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                   ||
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                     | |     
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-
-
-
-
-
             </td>
         </tr>
 }

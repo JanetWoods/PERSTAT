@@ -40,7 +40,8 @@ namespace PERSTAT.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Missions
-            .Include(m => m.Assignments);
+            .Include(m => m.Assignments)
+            .OrderBy(m => m.MissionTitle);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -89,7 +90,7 @@ namespace PERSTAT.Controllers
         // POST: Missions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditAsync(int id, [Bind("Id, MissionTitle, MissionDescription")] Missions mission)
+        public async Task<ActionResult> Edit(int id, [Bind("Id, MissionTitle, MissionDescription")] Missions mission)
         {
             if(id != mission.Id)
             {
@@ -108,10 +109,7 @@ namespace PERSTAT.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -120,19 +118,31 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Missions/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var mission = await _context.Missions
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (mission == null)
+            {
+                return NotFound();
+            }
+            return View(mission);
         }
 
         // POST: Missions/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                var mission = await _context.Missions.FindAsync(id);
+                _context.Missions.Remove(mission);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }

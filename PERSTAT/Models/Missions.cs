@@ -24,6 +24,6 @@ namespace PERSTAT.Models
         public ICollection<Assignment> Assignments { get; set; }
         public ICollection<CountyMissions> CountyMissions { get; set; }
 
-        
+        public ICollection<People> Peoples { get; set; }
     }
 }

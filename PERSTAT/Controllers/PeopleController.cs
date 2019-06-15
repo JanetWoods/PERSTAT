@@ -81,7 +81,7 @@ namespace PERSTAT.Controllers
 
             ViewData["OrganizationId"] = new SelectList(detailedPerson, "OrganizationId", "StateShort");
 
-            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "StatusName");
+            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "StatusName");
            return View();
         }
 
@@ -105,7 +105,7 @@ namespace PERSTAT.Controllers
 
             ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "StateShort");
 
-            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "Label", person.StatusId);
+            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "Label", person.StatusId);
             return View(person);
 
         }
@@ -123,7 +123,7 @@ namespace PERSTAT.Controllers
                 return NotFound();
             }
             ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "OrganizationName", person.OrganizationId);
-            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "StatusName", person.StatusId);
+            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "StatusName", person.StatusId);
             return View(person);
         }
 
@@ -157,7 +157,7 @@ namespace PERSTAT.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganiztionId", "Label", person.OrganizationId);
-            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "Label", person.StatusId);
+            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "Label", person.StatusId);
                 return View(person);
         }
                
@@ -172,7 +172,6 @@ namespace PERSTAT.Controllers
                  .Include(p => p.Organization)
                 .Include(p => p.Assignments)
                 .Include(p => p.Status)
-
                 .FirstOrDefaultAsync(p => p.Id == id);
             if(person ==null)
             {
