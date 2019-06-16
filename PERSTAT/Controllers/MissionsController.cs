@@ -46,9 +46,20 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Missions/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int? id)
         {
-            return View();
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var mission = await _context.Missions
+                .Include(m => m.Assignments)
+                .FirstAsync(p => p.Id == id);
+            if(mission == null)
+            {
+                return NotFound();
+            }
+            return View(mission);
         }
 
         // GET: Missions/Create

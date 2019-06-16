@@ -71,7 +71,7 @@ namespace PERSTAT.Controllers
         [Authorize]
         public IActionResult Create()
         {
-            var detailedPerson = _context.Organization
+            var detailedOrg = _context.Organization
                 .Include(p => p.State).Select(s => new
                 {
                     OrganizationId = s.OrganizationId,
@@ -79,7 +79,7 @@ namespace PERSTAT.Controllers
                 }).ToList();
 
 
-            ViewData["OrganizationId"] = new SelectList(detailedPerson, "OrganizationId", "StateShort");
+            ViewData["OrganizationId"] = new SelectList(detailedOrg, "OrganizationId", "StateShort");
 
             ViewData["StatusId"] = new SelectList(_context.Status, "Id", "StatusName");
            return View();
@@ -197,8 +197,8 @@ namespace PERSTAT.Controllers
             {
                 return View();
             }
-
         }
+       
         private bool PersonExists(int id)
         {
             return _context.People.Any(e => e.Id == id);

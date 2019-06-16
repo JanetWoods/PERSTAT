@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,10 +13,13 @@ namespace PERSTAT.Models
         [Required]
         public int AssignmentId { get; set; }
        
+        [Display(Name ="Person")]
         public int PeopleId { get; set; }
 
         public People People { get; set; }
 
+      
+        [Display(Name ="Mission")]
         public int MissionId { get; set; }
 
         public Missions Mission { get; set; }
@@ -23,9 +27,11 @@ namespace PERSTAT.Models
         public DateTime DateStart { get; set; }
         public DateTime DateEnd { get; set; }
 
-        public int IncidentId { get; set; }
+        [Display(Name = "Incident")]
+        public int IncidentId { get; set; } = 1;
         public Incident Incident { get; set; }
 
+        [Display(Name="Location")]
         public int LocationId { get; set; }
         public Locations Location { get; set; }
     
