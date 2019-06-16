@@ -25,9 +25,6 @@
                 @Html.DisplayNameFor(model => model.DateEnd)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Incident)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Location)
             </th>
             <th></th>
@@ -37,10 +34,11 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.People.Id)
+                @Html.DisplayFor(modelItem => item.People.NameFirst)
+                @Html.DisplayFor(modelItem => item.People.NameLast)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Mission.Id)
+                @Html.DisplayFor(modelItem => item.Mission.MissionTitle)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateStart)
@@ -49,13 +47,10 @@
                 @Html.DisplayFor(modelItem => item.DateEnd)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Incident.IncidentId)
+                @Html.DisplayFor(modelItem => item.Location.State)
+                @Html.DisplayFor(modelItem => item.Location.LocationCity)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Location.LocationId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AssignmentId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.AssignmentId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.AssignmentId">Delete</a>
             </td>
