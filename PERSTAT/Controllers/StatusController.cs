@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PERSTAT.Data;
 using PERSTAT.Models;
@@ -19,9 +21,11 @@ namespace PERSTAT.Controllers
 
         private readonly IConfiguration _config;
 
-        public StatusController(IConfiguration config)
+        public StatusController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
-            _config = config;
+            _userManager = userManager;
+            _context = context;
         }
 
         public SqlConnection Connection
@@ -34,14 +38,20 @@ namespace PERSTAT.Controllers
 
 
         // GET: Status
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var applicationDbContext = _context.Status
+                .Include(s => s.Assignments)
+                .OrderBy(s => s.StatusName);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Status/Details/5
         public ActionResult Details(int id)
         {
+            var applicationDbContext = _context.Status
+               .Include(s => s.Assignments)
+               .Include(s => s.People);
             return View();
         }
 
@@ -54,57 +64,93 @@ namespace PERSTAT.Controllers
         // POST: Status/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create([Bind("StatusName, StatusDescription")]Status status)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
+                _context.Add(status);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(status);
         }
 
         // GET: Status/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var status = await _context.Status.FindAsync(id);
+            if (status == null)
+            {
+                return NotFound();
+            }
+            return View(status);
         }
 
         // POST: Status/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, [Bind("Id, StatusName, StatusDescription")]Status status)
         {
-            try
+            if (id != status.Id)
             {
-                // TODO: Add update logic here
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(status);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!StatusExists(status.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(status);
+
         }
 
         // GET: Status/Delete/5
-        public ActionResult Delete(int id)
+        [Authorize]
+        public async Task<ActionResult> Delete(int? id)
         {
-            return View();
+            if(id ==null)
+            {
+                return NotFound();
+            }
+            var stat = await _context.Status
+                .FirstOrDefaultAsync(s => s.Id == id);
+            if(stat == null)
+            {
+                return NotFound();
+            }
+            return View(stat);
         }
 
-        // POST: Status/Delete/5
-        [HttpPost]
+        // POST: Status/Delete
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                var stat = await _context.Status.FindAsync(id);
+                _context.Status.Remove(stat);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -112,6 +158,10 @@ namespace PERSTAT.Controllers
             {
                 return View();
             }
+        }
+        private bool StatusExists(int id)
+        {
+            return _context.Status.Any(s => s.Id == id);
         }
     }
 }

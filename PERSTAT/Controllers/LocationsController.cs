@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PERSTAT.Data;
 using PERSTAT.Models;
@@ -19,9 +21,11 @@ namespace PERSTAT.Controllers
 
         private readonly IConfiguration _config;
 
-        public LocationsController(IConfiguration config)
+        public LocationsController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
-            _config = config;
+            _userManager = userManager;
+            _context = context;
         }
 
         public SqlConnection Connection
@@ -34,9 +38,16 @@ namespace PERSTAT.Controllers
 
 
         // GET: Locations
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
+
         {
-            return View();
+            var applicationDbContext = _context.Locations
+                .Include(p => p.State)
+                .Include(p => p.County)
+                .OrderBy(l => l.State.StateShort)
+                .ThenBy(l => l.County.CountyName)
+                .ThenBy(l => l.LocationCity);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Locations/Details/5
@@ -48,19 +59,27 @@ namespace PERSTAT.Controllers
         // GET: Locations/Create
         public ActionResult Create()
         {
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
+            ViewData["CountyId"] = new SelectList(_context.Counties, "Id", "CountyName");
             return View();
         }
 
         // POST: Locations/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create([Bind("LocationCity, LocationDetail, CountyId, StateId")]Locations location)
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(location);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
+                ViewData["CountyId"] = new SelectList(_context.Counties, "Id", "CountyName");
+                return View(location);
             }
             catch
             {
@@ -68,43 +87,85 @@ namespace PERSTAT.Controllers
             }
         }
 
-        // GET: Locations/Edit/5
-        public ActionResult Edit(int id)
+        // GET: Locations/Edit
+        public async Task<ActionResult> Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var location = await _context.Locations.FindAsync(id);
+            if (location == null)
+            {
+                return NotFound();
+            }
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
+            ViewData["CountyId"] = new SelectList(_context.Counties, "Id", "CountyName");
+            return View(location);
         }
 
-        // POST: Locations/Edit/5
+        // POST: Locations/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, [Bind("LocationId, LocationCity, LocationDetail, StateId, CountyId ")]Locations location)
         {
-            try
+            if (id != location.LocationId)
             {
-                // TODO: Add update logic here
-
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(location);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!LocationExists(location.LocationId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
+            ViewData["CountyId"] = new SelectList(_context.Counties, "Id", "CountyName");
+            return View(location);
         }
 
         // GET: Locations/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var location = await _context.Locations
+                .Include(p => p.State)
+                .Include(p => p.County)
+                .FirstOrDefaultAsync(l => l.LocationId == id);
+            if (location == null)
+            {
+                return NotFound();
+            }
+            return View(location);
         }
 
         // POST: Locations/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                var location = await _context.Locations.FindAsync(id);
+                _context.Locations.Remove(location);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -112,6 +173,12 @@ namespace PERSTAT.Controllers
             {
                 return View();
             }
+        }
+
+
+        private bool LocationExists(int id)
+        {
+            return _context.Locations.Any(e => e.LocationId == id);
         }
     }
 }

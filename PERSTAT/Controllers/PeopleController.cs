@@ -43,6 +43,7 @@ namespace PERSTAT.Controllers
             var applicationDbContext = _context.People
                 .Include(p => p.Status)
                 .Include(p => p.Organization)
+                .Include(p => p.Organization.State)
                 .Include(p => p.Assignments);
             return View(await applicationDbContext.ToListAsync());
         }
@@ -57,6 +58,7 @@ namespace PERSTAT.Controllers
             var person = await _context.People
                 .Include(p => p.Status)
                 .Include(p => p.Organization)
+                .Include(p => p.Organization.State)
                 .FirstAsync(p => p.Id == id);
             if (person == null)
             {
@@ -69,16 +71,24 @@ namespace PERSTAT.Controllers
         [Authorize]
         public IActionResult Create()
         {
-            ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "OrganizationName");
-            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "StatusName");
+            var detailedOrg = _context.Organization
+                .Include(p => p.State).Select(s => new
+                {
+                    OrganizationId = s.OrganizationId,
+                    StateShort = s.OrganizationName + " - " + s.State.StateShort
+                }).ToList();
 
-            return View();
+
+            ViewData["OrganizationId"] = new SelectList(detailedOrg, "OrganizationId", "StateShort");
+
+            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "StatusName");
+           return View();
         }
 
         // POST: People/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync([Bind("Title, NameFirst, NameMiddle, NameLast, StatusId, OrganizationId, POCforOrganization")] People person)
+        public async Task<ActionResult> Create([Bind("Title, NameFirst, NameMiddle, NameLast, StatusId, OrganizationId, POCforOrganization")] People person)
         {
             if (ModelState.IsValid)
             {
@@ -86,6 +96,16 @@ namespace PERSTAT.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            var detailedPerson = _context.Organization
+               .Include(p => p.State).Select(s => new
+               {
+                   OrganizationId = s.OrganizationId,
+                   StateShort = s.OrganizationName + " - " + s.State.StateShort
+               }).ToList();
+
+            ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "StateShort");
+
+            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "Label", person.StatusId);
             return View(person);
 
         }
@@ -103,7 +123,7 @@ namespace PERSTAT.Controllers
                 return NotFound();
             }
             ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "OrganizationName", person.OrganizationId);
-            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "StatusName", person.StatusId);
+            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "StatusName", person.StatusId);
             return View(person);
         }
 
@@ -137,7 +157,7 @@ namespace PERSTAT.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganiztionId", "Label", person.OrganizationId);
-            ViewData["StatusId"] = new SelectList(_context.Status, "StatusId", "Label", person.StatusId);
+            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "Label", person.StatusId);
                 return View(person);
         }
                
@@ -149,10 +169,9 @@ namespace PERSTAT.Controllers
                 return NotFound();
             }
             var person = await _context.People
-                // .Include(p => p.Organization)
-                //.Include(p => p.Assignments)
-                //.Include(p => p.Status)
-
+                 .Include(p => p.Organization)
+                .Include(p => p.Assignments)
+                .Include(p => p.Status)
                 .FirstOrDefaultAsync(p => p.Id == id);
             if(person ==null)
             {
@@ -178,8 +197,8 @@ namespace PERSTAT.Controllers
             {
                 return View();
             }
-
         }
+       
         private bool PersonExists(int id)
         {
             return _context.People.Any(e => e.Id == id);

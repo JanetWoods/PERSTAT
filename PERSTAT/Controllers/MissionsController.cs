@@ -40,14 +40,26 @@ namespace PERSTAT.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Missions
-            .Include(m => m.Assignments);
+            .Include(m => m.Assignments)
+            .OrderBy(m => m.MissionTitle);
             return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Missions/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int? id)
         {
-            return View();
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var mission = await _context.Missions
+                .Include(m => m.Assignments)
+                .FirstAsync(p => p.Id == id);
+            if(mission == null)
+            {
+                return NotFound();
+            }
+            return View(mission);
         }
 
         // GET: Missions/Create
@@ -60,7 +72,7 @@ namespace PERSTAT.Controllers
         // POST: Missions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync([Bind("MissionTitle, MissionDescription")]Missions mission)
+        public async Task<ActionResult> Create([Bind("MissionTitle, MissionDescription")]Missions mission)
         {
             if (ModelState.IsValid)
             {
@@ -72,42 +84,76 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Missions/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int? id)
         {
-            return View();
-        }
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var mission = await _context.Missions.FindAsync(id);
+            if (mission== null)
+            {
+                return NotFound();
+            }
+            return View(mission);
+            }
 
         // POST: Missions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, [Bind("Id, MissionTitle, MissionDescription")] Missions mission)
         {
-            try
+            if(id != mission.Id)
             {
-                // TODO: Add update logic here
+                return NotFound();
+            }
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(mission);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MissionExists(mission.Id))
+                    {
+                        return NotFound();
+                    }
+                    
+                }
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(mission);
         }
 
         // GET: Missions/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var mission = await _context.Missions
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (mission == null)
+            {
+                return NotFound();
+            }
+            return View(mission);
         }
 
         // POST: Missions/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                var mission = await _context.Missions.FindAsync(id);
+                _context.Missions.Remove(mission);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -115,6 +161,11 @@ namespace PERSTAT.Controllers
             {
                 return View();
             }
+        }
+
+        private bool MissionExists(int id)
+        {
+            return _context.Missions.Any(e => e.Id == id);
         }
     }
 }

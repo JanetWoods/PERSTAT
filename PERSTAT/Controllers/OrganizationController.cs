@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PERSTAT.Data;
@@ -42,32 +43,41 @@ namespace PERSTAT.Controllers
         {
             var applicationDbContext = _context.Organization
                 .Include(p => p.State)
-                .Include(p => p.People);
-            return View(await applicationDbContext.ToListAsync());
+                .Include(p => p.People)
+                .OrderBy(p => p.OrganizationName)
+                .ThenBy(p => p.State.StateShort);
+              return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Organization/Details/5
         public ActionResult Details(int id)
         {
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateShort");
             return View();
         }
 
         // GET: Organization/Create
         public ActionResult Create()
         {
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
             return View();
         }
 
         // POST: Organization/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create([Bind("OrganizationName, OrganizationStreet1, OrganizationStreet2, City, StateId")]Organization organization)
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+               if(ModelState.IsValid)
+                {
+                    _context.Add(organization);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
+                return View(organization);
             }
             catch
             {
@@ -99,19 +109,32 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Organization/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var org = await _context.Organization
+                .FirstOrDefaultAsync(s => s.OrganizationId == id);
+            if (org == null)
+            {
+                return NotFound();
+            }
+            return View(org);
         }
 
+
         // POST: Organization/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int OrganizationId)
         {
             try
             {
-                // TODO: Add delete logic here
+                var org = await _context.Organization.FindAsync(OrganizationId);
+                _context.Organization.Remove(org);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }

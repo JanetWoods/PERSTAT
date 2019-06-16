@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PERSTAT.Data;
 using PERSTAT.Models;
@@ -19,9 +21,12 @@ namespace PERSTAT.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _config;
 
-        public CountiesController(IConfiguration config)
+        public CountiesController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
-            _config = config;
+            _userManager = userManager;
+            _context = context;
+
         }
 
         public SqlConnection Connection
@@ -34,84 +39,137 @@ namespace PERSTAT.Controllers
 
 
         // GET: Counties
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View();
+            var applicationDbContext = _context.Counties
+                .Include(c => c.State)
+                .OrderBy(c => c.State)
+                .ThenBy(c => c.CountyName);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Counties/Details/5
         public ActionResult Details(int id)
         {
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
             return View();
         }
 
         // GET: Counties/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
             return View();
         }
 
         // POST: Counties/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create([Bind("Id, CountyName, StateId")] Counties county)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
+                _context.Add(county);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
+            return View(county);
+
         }
 
+
         // GET: Counties/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var county= await _context.Counties
+                .FindAsync(id);
+
+            if (county== null)
+            {
+                return NotFound();
+            }
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
+            return View(county);
         }
 
         // POST: Counties/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
 
+        public async Task<IActionResult> Edit(int id, [Bind("Id, CountyName, StateId")]Counties county)
+        {
+            if (id != county.Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(county);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CountyExists(county.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
+            return View(county);
         }
 
+
         // GET: Counties/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var county = await _context.Counties
+                .Include(c => c.State)
+                .FirstOrDefaultAsync(c => c.Id== id);
+            if (county == null)
+            {
+                return NotFound();
+            }
+            return View(county);
         }
 
         // POST: Counties/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                var county = await _context.Counties.FindAsync(id);
+                _context.Counties.Remove(county);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+               return View();
             }
+        }
+        private bool CountyExists(int id)
+        {
+            return _context.Counties.Any(e => e.Id == id);
         }
     }
 }

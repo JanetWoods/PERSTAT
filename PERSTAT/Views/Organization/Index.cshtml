@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<PERSTAT.Models.Organization>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Organization";
 }
 
-<h1>Index</h1>
+<h1>Organizations</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Add Organization</a>
 </p>
 <table class="table">
     <thead>
@@ -16,16 +16,10 @@
                 @Html.DisplayNameFor(model => model.OrganizationName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OrganizationStreet1)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrganizationStreet2)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.City)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.State)
+                @Html.DisplayNameFor(model => model.State.StateShort)
             </th>
             <th></th>
         </tr>
@@ -37,20 +31,14 @@
                 @Html.DisplayFor(modelItem => item.OrganizationName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OrganizationStreet1)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrganizationStreet2)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.City)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.State.StateId)
+                @Html.DisplayFor(modelItem => item.State.StateShort)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.OrganizationId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrganizationId">Details</a> |
+               
+                
                 <a asp-action="Delete" asp-route-id="@item.OrganizationId">Delete</a>
             </td>
         </tr>
