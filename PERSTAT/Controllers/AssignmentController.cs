@@ -318,9 +318,31 @@ namespace PERSTAT.Controllers
                 return View();
             }
         }
+
+        public async Task<IActionResult> GetAssignmentsByPerson(int id)
+        {
+            var groupByPeople = _context.Assignment
+                .Include(p => p.People)
+                .Include(p => p.Mission)
+                .Include(p => p.Location)
+                .Include(p => p.People.Status)
+                .Where(p => p.PeopleId == id)
+                .OrderByDescending(p => p.DateEnd);
+            if (groupByPeople == null)
+            {
+                return NotFound();
+            }
+            return View(await groupByPeople.ToListAsync());
+        }
+
+
+
         private bool AssignmentExists(int id)
         {
-            return _context.Status.Any(a => a.Id == id);
+            return _context.Assignment.Any(a => a.AssignmentId == id);
         }
+
+      
     }
 }
+
