@@ -42,6 +42,7 @@ namespace PERSTAT.Controllers
         {
             var applicationDbContext = _context.Assignment
                 .Include(a => a.People)
+                .Include(a => a.People.Status)
                 .Include(a => a.Mission)
                 .Include(a => a.Incident)
                 .Include(a => a.Location);
@@ -335,7 +336,22 @@ namespace PERSTAT.Controllers
             return View(await groupByPeople.ToListAsync());
         }
 
-
+        public async Task<IActionResult> GetAssignmentsByStatus(int id)
+        {
+            var groupByStatus = _context.Assignment
+                .Include(p => p.People)
+                .Include(p => p.Mission)
+                .Include(p => p.Location)
+                .Include(p => p.Location.State)
+                .Include(p => p.People.Status)
+                .Where(p => p.People.StatusId == id)
+                .OrderByDescending(p => p.DateEnd);
+            if (groupByStatus == null)
+            {
+                return NotFound();
+            }
+            return View(await groupByStatus.ToListAsync());
+        }
 
         private bool AssignmentExists(int id)
         {

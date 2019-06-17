@@ -16,6 +16,9 @@
                 @Html.DisplayNameFor(model => model.People)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.People.Status)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Mission)
             </th>
             <th>
@@ -24,7 +27,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.DateEnd)
             </th>
-        
+
             <th>
                 @Html.DisplayNameFor(model => model.Location)
             </th>
@@ -38,11 +41,17 @@
                 <a asp-action="GetAssignmentsByPerson" asp-controller="Assignment" asp-route-id="@item.PeopleId">
                     @Html.DisplayFor(modelItem => item.People.NameFirst)
                     @Html.DisplayFor(modelItem => item.People.NameLast)
-                    </a>
+                </a>
             </td>
+            <th>
+                <a asp-action="GetAssignmentsByStatus" asp-controller="Assignment" asp-route-id="@item.People.StatusId">
+                    @Html.DisplayFor(model => item.People.Status.StatusName)
+                    </a>
+            </th>
+
             <td>
-                <a asp-action ="GetPeopleByMission" asp-controller="Assignment" asp-route-id="@item.MissionId">
-                @Html.DisplayFor(modelItem => item.Mission.MissionTitle)
+                <a asp-action="GetPeopleByMission" asp-controller="Assignment" asp-route-id="@item.MissionId">
+                    @Html.DisplayFor(modelItem => item.Mission.MissionTitle)
                 </a>
             </td>
             <td>
@@ -51,13 +60,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DateEnd)
             </td>
-         
+
             <td>
-                @Html.DisplayFor(modelItem => item.Location.LocationCity), 
+                @Html.DisplayFor(modelItem => item.Location.LocationCity),
                 @Html.DisplayFor(modelItem => item.Location.LocationDetail)
             </td>
             <td>
-                           
+
                 <a asp-action="Delete" asp-route-id="@item.AssignmentId">Delete</a>
             </td>
         </tr>
