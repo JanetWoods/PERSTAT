@@ -14,11 +14,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="PeopleId" class="control-label"></label>
-                <select asp-for="PeopleId" class ="form-control" asp-items="ViewBag.PeopleId"></select>
+                <select asp-for="PeopleId" class="form-control" asp-items="ViewBag.PeopleId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="MissionId" class="control-label"></label>
-                <select asp-for="MissionId" class ="form-control" asp-items="ViewBag.MissionId"></select>
+                <select asp-for="MissionId" class="form-control" asp-items="ViewBag.MissionId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="DateStart" class="control-label"></label>
@@ -30,16 +30,17 @@
                 <input asp-for="DateEnd" class="form-control" />
                 <span asp-validation-for="DateEnd" class="text-danger"></span>
             </div>
-           @*
-               
+            @*
+                
             <div class="form-group">
                 <label asp-for="IncidentId" class="control-label"></label>
-                <select asp-for="IncidentId" class ="form-control" asp-items="ViewBag.IncidentId"></select>
+                <select asp-for="IncidentId" class="form-control" asp-items="ViewBag.IncidentId"></select>
             </div>
-           *@
-               <div class="form-group">
+            *@
+
+            <div class="form-group">
                 <label asp-for="LocationId" class="control-label"></label>
-                <select asp-for="LocationId" class ="form-control" asp-items="ViewBag.LocationId"></select>
+                <select asp-for="LocationId" class="form-control" asp-items="ViewBag.LocationId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -47,11 +48,18 @@
         </form>
     </div>
 </div>
+@if (ViewBag.Message != null)
+{
+    <script type="text"/javascript">window.onload = function(){
+    alert("@ViewBag.Message)
+    }</script>
+   
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -21,10 +21,16 @@ namespace PERSTAT.Models
       
         [Display(Name ="Mission")]
         public int MissionId { get; set; }
-
+ 
         public Missions Mission { get; set; }
 
+        [DataType(DataType.Date)]
+        [ValidateDateRange]
         public DateTime DateStart { get; set; }
+
+
+        [ValidateDateRange]
+        [DataType(DataType.Date)]
         public DateTime DateEnd { get; set; }
 
         [Display(Name = "Incident")]

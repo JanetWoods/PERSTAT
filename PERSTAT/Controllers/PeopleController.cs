@@ -38,6 +38,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: People
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.People
@@ -111,6 +112,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: People/Edit
+        [Authorize]
         public async Task<ActionResult> Edit(int? id)
         {
             if(id == null)
@@ -160,9 +162,10 @@ namespace PERSTAT.Controllers
             ViewData["StatusId"] = new SelectList(_context.Status, "Id", "Label", person.StatusId);
                 return View(person);
         }
-               
-            // GET: People/Delete/5
-            public async Task<IActionResult> Delete(int? id)
+
+        // GET: People/Delete/5
+        [Authorize]
+        public async Task<IActionResult> Delete(int? id)
         {
             if(id == null)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,7 @@ namespace PERSTAT.Controllers
 
 
         // GET: Incident
+        [Authorize]
         public ActionResult Index()
         {
             return View();
@@ -45,7 +47,7 @@ namespace PERSTAT.Controllers
         {
             return View();
         }
-
+        [Authorize]
         // GET: Incident/Create
         public ActionResult Create()
         {
@@ -69,6 +71,7 @@ namespace PERSTAT.Controllers
             }
         }
 
+        [Authorize]
         // GET: Incident/Edit/5
         public ActionResult Edit(int id)
         {
@@ -92,7 +95,9 @@ namespace PERSTAT.Controllers
             }
         }
 
+
         // GET: Incident/Delete/5
+        [Authorize]
         public ActionResult Delete(int id)
         {
             return View();

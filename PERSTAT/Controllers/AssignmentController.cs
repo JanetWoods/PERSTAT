@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,6 +39,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Assignment
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Assignment
@@ -50,6 +52,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Assignment/Details/5
+        [Authorize]
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
@@ -116,10 +119,12 @@ namespace PERSTAT.Controllers
                     IncidentString = t.Type.TypeIncident
                 }).ToList();
 
+           
             ViewData["PeopleId"] = new SelectList(detailedPerson, "PeopleId", "PeopleString");
             ViewData["LocationId"] = new SelectList(detailedLocation, "LocationId", "LocationString");
             ViewData["MissionId"] = new SelectList(detailedMission, "MissionId", "MissionString");
             ViewData["IncidentId"] = new SelectList(detailedIncident, "IncidentId", "IncidentString");
+            ViewBag.message = "";
             return View();
         }
 
@@ -128,13 +133,7 @@ namespace PERSTAT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("PeopleId, MissionId, DateStart, DateEnd, LocationId, IncidentId")]Assignment assignment)
         {
-            if (ModelState.IsValid)
 
-            {
-                _context.Add(assignment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
             var detailedLocation = _context.Locations
             .Include(l => l.State).Select(s => new
             {
@@ -167,10 +166,18 @@ namespace PERSTAT.Controllers
             ViewData["LocationId"] = new SelectList(detailedLocation, "LocationId", "LocationString");
             ViewData["MissionId"] = new SelectList(detailedMission, "MissionId", "MissionString");
             ViewData["IncidentId"] = new SelectList(detailedIncident, "IncidentId", "IncidentString");
-            return View(assignment);
+
+            if (ModelState.IsValid)
+            {
+                return View(assignment);
+            }
+            _context.Add(assignment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
 
+        [Authorize]
         // GET: Assignment/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
@@ -281,6 +288,7 @@ namespace PERSTAT.Controllers
             return View(assignment);
         }
 
+        [Authorize]
         // GET: Assignment/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
@@ -320,6 +328,7 @@ namespace PERSTAT.Controllers
             }
         }
 
+
         public async Task<IActionResult> GetAssignmentsByPerson(int id)
         {
             var groupByPeople = _context.Assignment
@@ -358,7 +367,17 @@ namespace PERSTAT.Controllers
             return _context.Assignment.Any(a => a.AssignmentId == id);
         }
 
-      
+        public bool GoodDate(DateTime dateStart, DateTime dateEnd)
+        {
+            if (dateEnd > dateStart)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
+     
     }
 }
 
