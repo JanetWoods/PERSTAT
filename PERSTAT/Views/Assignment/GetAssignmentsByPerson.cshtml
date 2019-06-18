@@ -1,42 +1,32 @@
-﻿@model IEnumerable<PERSTAT.Models.Assignment>
+﻿@model PERSTAT.Models.People
 
 @{
     ViewData["Title"] = "GetAssignmentsByPerson";
 }
 
-<h1>GetAssignmentsByPerson</h1>
+<h1>Assignments for: @Model.NameFirst @Model.NameLast </h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.People)
+                Mission
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Mission)
+                Start Date
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateStart)
+                End Date
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateEnd)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
+                Location
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Assignments) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.People.NameFirst)
-                 @Html.DisplayFor(modelItem => item.People.NameLast)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Mission.MissionTitle)
             </td>

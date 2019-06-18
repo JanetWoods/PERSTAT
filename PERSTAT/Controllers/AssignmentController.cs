@@ -230,7 +230,7 @@ namespace PERSTAT.Controllers
         // POST: Assignment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AssignmentId, PeopleId, LocationId, MissionId, IncidentId")]Assignment assignment)
+        public async Task<IActionResult> Edit(int id, [Bind("AssignmentId, PeopleId, LocationId, MissionId, DateStart, DateEnd, IncidentId")]Assignment assignment)
         {
             if (id != assignment.AssignmentId)
             {
@@ -332,20 +332,21 @@ namespace PERSTAT.Controllers
         }
 
 
-        public async Task<IActionResult> GetAssignmentsByPerson(int id)
+        public IActionResult GetAssignmentsByPerson(int id)
         {
-            var groupByPeople = _context.Assignment
-                .Include(p => p.People)
-                .Include(p => p.Mission)
-                .Include(p => p.Location)
-                .Include(p => p.People.Status)
-                .Where(p => p.PeopleId == id)
-                .OrderByDescending(p => p.DateEnd);
-            if (groupByPeople == null)
+            var personWithAssignments = _context.People
+                .Include(p => p.Assignments)
+                .ThenInclude(a => a.Mission)
+                .Include(p => p.Assignments)
+                .ThenInclude(a => a.Location)
+                .Include(p => p.Status)
+                .Where(p => p.Id == id).FirstOrDefault();        personWithAssignments.Assignments.OrderByDescending(a => a.DateEnd.Date);
+          
+            if (personWithAssignments == null)
             {
                 return NotFound();
             }
-            return View(await groupByPeople.ToListAsync());
+            return View(personWithAssignments);
         }
 
         public async Task<IActionResult> GetAssignmentsByStatus(int id)
