@@ -21,11 +21,17 @@ namespace PERSTAT.Models
       
         [Display(Name ="Mission")]
         public int MissionId { get; set; }
-
+ 
         public Missions Mission { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime DateStart { get; set; }
+
+
+        [DataType(DataType.Date)]
+        [DateGreaterThan("DateStart")]
         public DateTime DateEnd { get; set; }
+
 
         [Display(Name = "Incident")]
         public int IncidentId { get; set; } = 1;
@@ -34,7 +40,6 @@ namespace PERSTAT.Models
         [Display(Name="Location")]
         public int LocationId { get; set; }
         public Locations Location { get; set; }
-    
-
+      
     }
 }

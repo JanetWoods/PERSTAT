@@ -37,6 +37,7 @@ namespace PERSTAT.Controllers
 
 
         // GET: Missions
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Missions
@@ -44,7 +45,7 @@ namespace PERSTAT.Controllers
             .OrderBy(m => m.MissionTitle);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        [Authorize]
         // GET: Missions/Details/5
         public async Task<ActionResult> Details(int? id)
         {
@@ -61,7 +62,7 @@ namespace PERSTAT.Controllers
             }
             return View(mission);
         }
-
+        [Authorize]
         // GET: Missions/Create
         [Authorize]
         public ActionResult Create()
@@ -84,6 +85,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Missions/Edit/5
+        [Authorize]
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
@@ -129,6 +131,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Missions/Delete/5
+        [Authorize]
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)

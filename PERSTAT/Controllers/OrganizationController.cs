@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,7 @@ namespace PERSTAT.Controllers
 
 
         // GET: Organization
+        [Authorize]
         public async Task<ActionResult> Index()
         {
             var applicationDbContext = _context.Organization
@@ -57,6 +59,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Organization/Create
+        [Authorize]
         public ActionResult Create()
         {
             ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
@@ -86,6 +89,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Organization/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             return View();
@@ -109,6 +113,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Organization/Delete/5
+        [Authorize]
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)

@@ -38,6 +38,7 @@ namespace PERSTAT.Controllers
 
 
         // GET: Status
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Status
@@ -47,6 +48,7 @@ namespace PERSTAT.Controllers
         }
 
         // GET: Status/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             var applicationDbContext = _context.Status
@@ -64,6 +66,7 @@ namespace PERSTAT.Controllers
         // POST: Status/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<ActionResult> Create([Bind("StatusName, StatusDescription")]Status status)
         {
             if (ModelState.IsValid)

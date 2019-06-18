@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -38,6 +39,7 @@ namespace PERSTAT.Controllers
 
 
         // GET: Locations
+        [Authorize]
         public async Task<ActionResult> Index()
 
         {
@@ -49,7 +51,7 @@ namespace PERSTAT.Controllers
                 .ThenBy(l => l.LocationCity);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        [Authorize]
         // GET: Locations/Details/5
         public ActionResult Details(int id)
         {
@@ -63,7 +65,7 @@ namespace PERSTAT.Controllers
             ViewData["CountyId"] = new SelectList(_context.Counties, "Id", "CountyName");
             return View();
         }
-
+        [Authorize]
         // POST: Locations/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -87,6 +89,7 @@ namespace PERSTAT.Controllers
             }
         }
 
+        [Authorize]
         // GET: Locations/Edit
         public async Task<ActionResult> Edit(int? id)
         {
