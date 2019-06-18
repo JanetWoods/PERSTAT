@@ -12,8 +12,9 @@ namespace PERSTAT.Models
         [Required]
         public int Id { get; set; }
 
+        [Display(Name ="Status")]
         public string StatusName { get; set; }
-
+        [Display(Name ="Description")]
         public string StatusDescription { get; set; }
 
         public ICollection<People> People { get; set; }

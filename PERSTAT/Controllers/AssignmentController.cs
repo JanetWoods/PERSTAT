@@ -340,7 +340,8 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Assignments)
                 .ThenInclude(a => a.Location)
                 .Include(p => p.Status)
-                .Where(p => p.Id == id).FirstOrDefault();        personWithAssignments.Assignments.OrderByDescending(a => a.DateEnd.Date);
+                .Where(p => p.Id == id).FirstOrDefault(); 
+                
           
             if (personWithAssignments == null)
             {
