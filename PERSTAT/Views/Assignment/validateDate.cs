@@ -6,13 +6,20 @@ using System.Threading.Tasks;
 
 namespace PERSTAT.Models
 {
-    public class ValidateDateRange : ValidationAttribute
+    public class DateGreaterThan: ValidationAttribute
     {
+        private string _startDatePropertyName;
+        public DateGreaterThan(string startDatePropertyName)
+        {
+            _startDatePropertyName = startDatePropertyName;
+        }
+
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            DateTime DateEnd = (DateTime)value;
-            DateTime DateStart = (DateTime)value;
-            if(DateStart < DateEnd)
+            var propertyInfo = validationContext.ObjectType.GetProperty(_startDatePropertyName);
+            var propertyValue = propertyInfo.GetValue(validationContext.ObjectInstance, null);
+
+            if((DateTime)value > (DateTime)propertyValue)
             {
                 return ValidationResult.Success;
             }

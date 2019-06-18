@@ -119,6 +119,7 @@ namespace PERSTAT.Controllers
                     IncidentString = t.Type.TypeIncident
                 }).ToList();
 
+            
            
             ViewData["PeopleId"] = new SelectList(detailedPerson, "PeopleId", "PeopleString");
             ViewData["LocationId"] = new SelectList(detailedLocation, "LocationId", "LocationString");
@@ -167,13 +168,15 @@ namespace PERSTAT.Controllers
             ViewData["MissionId"] = new SelectList(detailedMission, "MissionId", "MissionString");
             ViewData["IncidentId"] = new SelectList(detailedIncident, "IncidentId", "IncidentString");
 
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
-                return View(assignment);
+                _context.Add(assignment);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            _context.Add(assignment);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                return View(assignment);
+
+            
         }
 
 
@@ -369,7 +372,7 @@ namespace PERSTAT.Controllers
 
         public bool GoodDate(DateTime dateStart, DateTime dateEnd)
         {
-            if (dateEnd > dateStart)
+            if (dateEnd.Date > dateStart.Date)
             {
                 return true;
             }
