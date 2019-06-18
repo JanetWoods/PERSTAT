@@ -491,7 +491,7 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.Missions", "Mission")
                         .WithMany("Assignments")
                         .HasForeignKey("MissionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PERSTAT.Models.People", "People")
                         .WithMany("Assignments")
@@ -544,7 +544,7 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.States", "State")
                         .WithMany("Organizations")
                         .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("PERSTAT.Models.People", b =>
@@ -574,7 +574,7 @@ namespace PERSTAT.Data.Migrations
                     b.HasOne("PERSTAT.Models.Missions", "Mission")
                         .WithMany("CountyMissions")
                         .HasForeignKey("MissionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

@@ -360,6 +360,8 @@ namespace PERSTAT.Controllers
                 .Include(p => p.People.Status)
                 .Where(p => p.People.StatusId == id)
                 .OrderByDescending(p => p.DateEnd);
+
+           
             if (groupByStatus == null)
             {
                 return NotFound();
