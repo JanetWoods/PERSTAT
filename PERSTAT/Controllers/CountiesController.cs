@@ -167,7 +167,8 @@ namespace PERSTAT.Controllers
             }
             catch
             {
-               return View();
+                ViewBag.Message = "You must remove related locations before you can remove county";
+                return View();
             }
         }
         private bool CountyExists(int id)

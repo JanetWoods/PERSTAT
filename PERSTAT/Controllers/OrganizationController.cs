@@ -90,7 +90,7 @@ namespace PERSTAT.Controllers
 
         // GET: Organization/Edit
         [Authorize]
-        public async Task<ActionResult> EditAsync(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -101,6 +101,7 @@ namespace PERSTAT.Controllers
             {
                 return NotFound();
             }
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateShort", org.StateId);
             return View(org);
         }
 
@@ -109,7 +110,7 @@ namespace PERSTAT.Controllers
         // POST: Organization/Edit/
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, [Bind("int OrganizationId, OrganizationName, OrganizationStreet1, OrganizationStreet2, City, StateId")]Organization organization)
+        public async Task<ActionResult> Edit(int id, [Bind("OrganizationId, OrganizationName, OrganizationStreet1, OrganizationStreet2, City, StateId")]Organization organization)
         {
             if (id != organization.OrganizationId)
             {
@@ -128,11 +129,11 @@ namespace PERSTAT.Controllers
                     {
                         return NotFound();
                     }
-
                 }
 
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateShort", organization.StateId);
             return View(organization);
 
         }

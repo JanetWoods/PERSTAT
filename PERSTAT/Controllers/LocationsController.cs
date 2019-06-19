@@ -179,7 +179,7 @@ namespace PERSTAT.Controllers
             }
             catch
             {
-                ViewBag.Message = "Can not remove while related assignments exist.";
+                ViewBag.Message = "Cannot remove while related assignments exist.";
                 return View();
             }
         }

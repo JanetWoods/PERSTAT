@@ -45,6 +45,7 @@ namespace PERSTAT.Controllers
             var applicationDbContext = _context.Assignment
                 .Include(a => a.People)
                 .Include(a => a.People.Status)
+                .Include(a => a.People.Organization)
                 .Include(a => a.Mission)
                 .Include(a => a.Incident)
                 .Include(a => a.Location)
@@ -81,6 +82,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Mission)
                 .Include(p => p.Location)
                 .Include(p => p.People.Status)
+                .Include(p => p.People.Organization)
                 .Where(p => p.MissionId == id && p.DateEnd > (DateTime.Now).AddDays(-1))
                 .OrderByDescending(p => p.DateEnd);
 
@@ -368,6 +370,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Location)
                 .Include(p => p.Location.State)
                 .Include(p => p.People.Status)
+                .Include(p => p.People.Organization)
                 .Where(p => p.People.StatusId == id && p.DateEnd > (DateTime.Now).AddDays(-1))
                 .OrderByDescending(p => p.DateEnd);
 

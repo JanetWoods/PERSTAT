@@ -45,7 +45,9 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Status)
                 .Include(p => p.Organization)
                 .Include(p => p.Organization.State)
-                .Include(p => p.Assignments);
+                .Include(p => p.Assignments)
+                .OrderBy(p => p.NameLast)
+                .ThenBy(p => p.NameFirst);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -176,7 +178,8 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Assignments)
                 .Include(p => p.Status)
                 .FirstOrDefaultAsync(p => p.Id == id);
-            if(person ==null)
+            ViewBag.message = "";
+            if (person ==null)
             {
                 return NotFound();
             }
@@ -198,6 +201,7 @@ namespace PERSTAT.Controllers
             }
             catch
             {
+                ViewBag.message = "You must remove related records before removing this one.  It is in use.";
                 return View();
             }
         }
