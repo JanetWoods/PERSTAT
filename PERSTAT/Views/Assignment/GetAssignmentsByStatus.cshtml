@@ -22,6 +22,9 @@
                             @Html.DisplayNameFor(model => model.Location)
                         </th>
                         <th>
+                                Status
+                        </th>
+                        <th>
                             @Html.DisplayNameFor(model => model.DateStart)
                         </th>
                         <th>
@@ -45,13 +48,15 @@
                             @Html.DisplayFor(modelItem => item.Location.LocationCity), @Html.DisplayFor(modelItem => item.Location.State.StateShort)
                         </td>
                         <td>
+                            <strong>
+                            @Html.DisplayFor(modelItem => item.People.Status.StatusName)
+                            </strong>
+                        </td>
+                        <td>
                             @Html.DisplayFor(modelItem => item.DateStart)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.DateEnd)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.People.Status.StatusName)
                         </td>
                         <td>
              

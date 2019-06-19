@@ -1,16 +1,23 @@
-﻿@model PERSTAT.Models.People
+﻿
+@model IEnumerable<PERSTAT.Models.Assignment>
 
 @{
     ViewData["Title"] = "GetAssignmentsByPerson";
 }
 
-<h1>Assignments for: @Model.NameFirst @Model.NameLast </h1>
+<h1>Assignments </h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>
+                Who
+            </th>
+            <th>
                 Mission
+            </th>
+            <th>
+                Location
             </th>
             <th>
                 Start Date
@@ -18,26 +25,28 @@
             <th>
                 End Date
             </th>
-            <th>
-                Location
-            </th>
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Assignments) {
+@foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.People.NameFirst)
+                @Html.DisplayFor(modelItem => item.People.NameLast)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Mission.MissionTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location.LocationCity), @Html.DisplayFor(modelItem => item.Location.State.StateShort)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateStart)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateEnd)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location.LocationCity), @Html.DisplayFor(modelItem => item.Location.State.StateShort)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.AssignmentId">Edit</a> |
