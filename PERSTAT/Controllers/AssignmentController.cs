@@ -51,6 +51,7 @@ namespace PERSTAT.Controllers
                 .Where(p => p.DateEnd > (DateTime.Now).AddDays(-1))
                 .OrderByDescending(p => p.DateEnd);
             return View(await applicationDbContext.ToListAsync());
+
         }
 
         // GET: Assignment/Details/5
@@ -82,6 +83,9 @@ namespace PERSTAT.Controllers
                 .Include(p => p.People.Status)
                 .Where(p => p.MissionId == id && p.DateEnd > (DateTime.Now).AddDays(-1))
                 .OrderByDescending(p => p.DateEnd);
+
+            var count = groupByM.Count();
+
             if (groupByM == null)
             {
                 return NotFound();
@@ -104,7 +108,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Organization).Select(i => new
                 {
                     PeopleId = i.Id,
-                    PeopleString = i.NameFirst + " " + i.NameMiddle + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
+                    PeopleString = i.NameFirst + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
                 }).ToList();
             var detailedMission = _context.Missions.Select(m => new
             {
@@ -206,7 +210,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Organization).Select(i => new
                 {
                     PeopleId = i.Id,
-                    PeopleString = i.NameFirst + " " + i.NameMiddle + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
+                    PeopleString = i.NameFirst + " " +  " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
                 }).ToList();
             var detailedMission = _context.Missions.Select(m => new
             {
@@ -269,7 +273,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Organization).Select(i => new
                 {
                     PeopleId = i.Id,
-                    PeopleString = i.NameFirst + " " + i.NameMiddle + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
+                    PeopleString = i.NameFirst + " " + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
                 }).ToList();
             var detailedMission = _context.Missions.Select(m => new
             {
@@ -292,6 +296,8 @@ namespace PERSTAT.Controllers
             ViewData["IncidentId"] = new SelectList(detailedIncident, "IncidentId", "IncidentString");
             return View(assignment);
         }
+      
+
 
         [Authorize]
         // GET: Assignment/Delete/5
@@ -345,6 +351,7 @@ namespace PERSTAT.Controllers
                 .Where(a => a.PeopleId == id)
                 .ToList();
 
+            var count = assigments.Count();
 
             if (assigments == null)
             {
@@ -364,6 +371,7 @@ namespace PERSTAT.Controllers
                 .Where(p => p.People.StatusId == id && p.DateEnd > (DateTime.Now).AddDays(-1))
                 .OrderByDescending(p => p.DateEnd);
 
+            var count = groupByStatus.Count();
 
             if (groupByStatus == null)
             {

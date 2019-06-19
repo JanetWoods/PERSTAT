@@ -24,6 +24,7 @@ namespace PERSTAT.Models
 
         public ICollection<Missions> Missions { get; set; }
 
+
         public ICollection<Assignment> Assignments { get; set; }
     }
 }
