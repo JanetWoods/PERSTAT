@@ -4,7 +4,7 @@
     ViewData["Title"] = "GetPeopleByMission";
 }
 
-<h1>GetPeopleByMission</h1>
+<h1>Mission Support</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -14,6 +14,9 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.People)
+            </th>
+            <th>
+                Status
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Mission)
@@ -38,7 +41,11 @@
                 @Html.DisplayFor(modelItem => item.People.NameLast)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.People.Status.StatusName)
+            </td>
+            <td><strong>
                 @Html.DisplayFor(modelItem => item.Mission.MissionTitle)
+                </strong>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateStart)

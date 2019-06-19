@@ -141,9 +141,13 @@ namespace PERSTAT.Controllers
             return View(location);
         }
 
+            public string Message = "";
+
         // GET: Locations/Delete/5
+        [Authorize]
         public async Task<ActionResult> Delete(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -158,6 +162,7 @@ namespace PERSTAT.Controllers
             }
             return View(location);
         }
+        
 
         // POST: Locations/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -174,9 +179,11 @@ namespace PERSTAT.Controllers
             }
             catch
             {
+                ViewBag.Message = "Cannot remove while related assignments exist.";
                 return View();
             }
         }
+                
 
 
         private bool LocationExists(int id)

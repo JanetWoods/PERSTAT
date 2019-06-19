@@ -37,8 +37,9 @@
                 @Html.DisplayFor(modelItem => item.State.StateShort)
             </td>
             <td>
-               
-                
+
+                <a asp-action="Edit" asp-route-id="@item.OrganizationId">Edit</a>
+                  | | 
                 <a asp-action="Delete" asp-route-id="@item.OrganizationId">Delete</a>
             </td>
         </tr>

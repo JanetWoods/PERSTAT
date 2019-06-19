@@ -48,7 +48,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.People)
                 .OrderBy(p => p.OrganizationName)
                 .ThenBy(p => p.State.StateShort);
-              return View(await applicationDbContext.ToListAsync());
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Organization/Details/5
@@ -73,7 +73,7 @@ namespace PERSTAT.Controllers
         {
             try
             {
-               if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     _context.Add(organization);
                     await _context.SaveChangesAsync();
@@ -88,28 +88,54 @@ namespace PERSTAT.Controllers
             }
         }
 
-        // GET: Organization/Edit/5
+        // GET: Organization/Edit
         [Authorize]
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var org = await _context.Organization.FindAsync(id);
+            if (org == null)
+            {
+                return NotFound();
+            }
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateShort", org.StateId);
+            return View(org);
         }
 
-        // POST: Organization/Edit/5
+
+
+        // POST: Organization/Edit/
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, [Bind("OrganizationId, OrganizationName, OrganizationStreet1, OrganizationStreet2, City, StateId")]Organization organization)
         {
-            try
+            if (id != organization.OrganizationId)
             {
-                // TODO: Add update logic here
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(organization);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!OrganizationExists(organization.OrganizationId))
+                    {
+                        return NotFound();
+                    }
+                }
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateShort", organization.StateId);
+            return View(organization);
+
         }
 
         // GET: Organization/Delete/5
@@ -148,5 +174,10 @@ namespace PERSTAT.Controllers
                 return View();
             }
         }
+        private bool OrganizationExists(int id)
+        {
+            return _context.Organization.Any(e => e.OrganizationId == id);
+        }
     }
+
 }

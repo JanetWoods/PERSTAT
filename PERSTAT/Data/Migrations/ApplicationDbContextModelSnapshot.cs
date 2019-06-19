@@ -550,7 +550,7 @@ namespace PERSTAT.Data.Migrations
             modelBuilder.Entity("PERSTAT.Models.People", b =>
                 {
                     b.HasOne("PERSTAT.Models.Missions")
-                        .WithMany("Peoples")
+                        .WithMany("ListOfPeople")
                         .HasForeignKey("MissionsId");
 
                     b.HasOne("PERSTAT.Models.Organization", "Organization")

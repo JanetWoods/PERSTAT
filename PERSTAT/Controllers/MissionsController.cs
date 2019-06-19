@@ -140,6 +140,7 @@ namespace PERSTAT.Controllers
             }
             var mission = await _context.Missions
                 .FirstOrDefaultAsync(m => m.Id == id);
+            ViewBag.message = "";
             if (mission == null)
             {
                 return NotFound();
@@ -162,6 +163,7 @@ namespace PERSTAT.Controllers
             }
             catch
             {
+                ViewBag.message = "Related assignments won't allow you to delete this record.";
                 return View();
             }
         }

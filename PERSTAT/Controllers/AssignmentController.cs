@@ -45,10 +45,14 @@ namespace PERSTAT.Controllers
             var applicationDbContext = _context.Assignment
                 .Include(a => a.People)
                 .Include(a => a.People.Status)
+                .Include(a => a.People.Organization)
                 .Include(a => a.Mission)
                 .Include(a => a.Incident)
-                .Include(a => a.Location);
+                .Include(a => a.Location)
+                .Where(p => p.DateEnd > (DateTime.Now).AddDays(-1))
+                .OrderByDescending(p => p.DateEnd);
             return View(await applicationDbContext.ToListAsync());
+
         }
 
         // GET: Assignment/Details/5
@@ -78,8 +82,12 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Mission)
                 .Include(p => p.Location)
                 .Include(p => p.People.Status)
-                .Where(p => p.MissionId == id)
-                .Where(p => p.DateEnd > DateTime.Now);
+                .Include(p => p.People.Organization)
+                .Where(p => p.MissionId == id && p.DateEnd > (DateTime.Now).AddDays(-1))
+                .OrderByDescending(p => p.DateEnd);
+
+            var count = groupByM.Count();
+
             if (groupByM == null)
             {
                 return NotFound();
@@ -102,7 +110,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Organization).Select(i => new
                 {
                     PeopleId = i.Id,
-                    PeopleString = i.NameFirst + " " + i.NameMiddle + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
+                    PeopleString = i.NameFirst + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
                 }).ToList();
             var detailedMission = _context.Missions.Select(m => new
             {
@@ -119,8 +127,8 @@ namespace PERSTAT.Controllers
                     IncidentString = t.Type.TypeIncident
                 }).ToList();
 
-            
-           
+
+
             ViewData["PeopleId"] = new SelectList(detailedPerson, "PeopleId", "PeopleString");
             ViewData["LocationId"] = new SelectList(detailedLocation, "LocationId", "LocationString");
             ViewData["MissionId"] = new SelectList(detailedMission, "MissionId", "MissionString");
@@ -168,15 +176,15 @@ namespace PERSTAT.Controllers
             ViewData["MissionId"] = new SelectList(detailedMission, "MissionId", "MissionString");
             ViewData["IncidentId"] = new SelectList(detailedIncident, "IncidentId", "IncidentString");
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(assignment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-                return View(assignment);
+            return View(assignment);
 
-            
+
         }
 
 
@@ -204,7 +212,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Organization).Select(i => new
                 {
                     PeopleId = i.Id,
-                    PeopleString = i.NameFirst + " " + i.NameMiddle + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
+                    PeopleString = i.NameFirst + " " +  " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
                 }).ToList();
             var detailedMission = _context.Missions.Select(m => new
             {
@@ -230,30 +238,30 @@ namespace PERSTAT.Controllers
         // POST: Assignment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AssignmentId, PeopleId, LocationId, MissionId, IncidentId")]Assignment assignment)
+        public async Task<IActionResult> Edit(int id, [Bind("AssignmentId, PeopleId, LocationId, MissionId, DateStart, DateEnd, IncidentId")]Assignment assignment)
         {
             if (id != assignment.AssignmentId)
             {
                 return NotFound();
-            }   
-          if(ModelState.IsValid)
+            }
+            if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(assignment);
                     await _context.SaveChangesAsync();
                 }
-             catch (DbUpdateConcurrencyException)
-            {
-                if(!AssignmentExists(assignment.AssignmentId))
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AssignmentExists(assignment.AssignmentId))
                     {
                         return NotFound();
                     }
-                else
+                    else
                     {
                         throw;
                     }
-            }
+                }
                 return RedirectToAction(nameof(Index));
             }
             var detailedLocation = _context.Locations
@@ -267,7 +275,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Organization).Select(i => new
                 {
                     PeopleId = i.Id,
-                    PeopleString = i.NameFirst + " " + i.NameMiddle + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
+                    PeopleString = i.NameFirst + " " + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
                 }).ToList();
             var detailedMission = _context.Missions.Select(m => new
             {
@@ -290,12 +298,14 @@ namespace PERSTAT.Controllers
             ViewData["IncidentId"] = new SelectList(detailedIncident, "IncidentId", "IncidentString");
             return View(assignment);
         }
+      
+
 
         [Authorize]
         // GET: Assignment/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -305,7 +315,7 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Location)
                 .Include(p => p.People.Status)
                 .FirstOrDefaultAsync(p => p.AssignmentId == id);
-            if(assignment == null)
+            if (assignment == null)
             {
                 return NotFound();
             }
@@ -332,20 +342,24 @@ namespace PERSTAT.Controllers
         }
 
 
-        public async Task<IActionResult> GetAssignmentsByPerson(int id)
+        public IActionResult GetAssignmentsByPerson(int id)
         {
-            var groupByPeople = _context.Assignment
-                .Include(p => p.People)
-                .Include(p => p.Mission)
-                .Include(p => p.Location)
-                .Include(p => p.People.Status)
-                .Where(p => p.PeopleId == id)
-                .OrderByDescending(p => p.DateEnd);
-            if (groupByPeople == null)
+
+            var assigments = _context.Assignment
+                .Where(a => a.DateEnd > (DateTime.Now).AddDays(-1))
+                .Include(a => a.People)
+                .Include(a => a.Mission)
+                .Include(a => a.Location)
+                .Where(a => a.PeopleId == id)
+                .ToList();
+
+            var count = assigments.Count();
+
+            if (assigments == null)
             {
                 return NotFound();
             }
-            return View(await groupByPeople.ToListAsync());
+            return View(assigments);
         }
 
         public async Task<IActionResult> GetAssignmentsByStatus(int id)
@@ -356,8 +370,12 @@ namespace PERSTAT.Controllers
                 .Include(p => p.Location)
                 .Include(p => p.Location.State)
                 .Include(p => p.People.Status)
-                .Where(p => p.People.StatusId == id)
+                .Include(p => p.People.Organization)
+                .Where(p => p.People.StatusId == id && p.DateEnd > (DateTime.Now).AddDays(-1))
                 .OrderByDescending(p => p.DateEnd);
+
+            var count = groupByStatus.Count();
+
             if (groupByStatus == null)
             {
                 return NotFound();
@@ -370,17 +388,6 @@ namespace PERSTAT.Controllers
             return _context.Assignment.Any(a => a.AssignmentId == id);
         }
 
-        public bool GoodDate(DateTime dateStart, DateTime dateEnd)
-        {
-            if (dateEnd.Date > dateStart.Date)
-            {
-                return true;
-            }
-            else
-                return false;
-        }
-
-     
     }
 }
 

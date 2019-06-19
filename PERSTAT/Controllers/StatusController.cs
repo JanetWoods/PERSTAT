@@ -159,6 +159,7 @@ namespace PERSTAT.Controllers
             }
             catch
             {
+                ViewBag.Message = "Related records are still being used.";
                 return View();
             }
         }
