@@ -126,7 +126,15 @@ namespace PERSTAT.Controllers
             {
                 return NotFound();
             }
-            ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "OrganizationName", person.OrganizationId);
+            var detailedOrg = _context.Organization
+                  .Include(p => p.State).Select(s => new
+                  {
+                      OrganizationId = s.OrganizationId,
+                      StateShort = s.OrganizationName + " - " + s.State.StateShort
+                  }).ToList();
+
+            ViewData["OrganizationId"] = new SelectList(detailedOrg, "OrganizationId", "StateShort");
+
             ViewData["StatusId"] = new SelectList(_context.Status, "Id", "StatusName", person.StatusId);
             return View(person);
         }
