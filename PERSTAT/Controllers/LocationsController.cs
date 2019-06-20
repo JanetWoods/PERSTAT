@@ -43,7 +43,7 @@ namespace PERSTAT.Controllers
         public async Task<ActionResult> Index()
 
         {
-            var applicationDbContext = _context.Locations
+            var applicationDbContext = _context.Locations.OrderBy(l => l.State.StateShort).ThenBy(l => l.LocationCity)
                 .Include(p => p.State)
                 .Include(p => p.County)
                 .OrderBy(l => l.State.StateShort)
@@ -61,8 +61,11 @@ namespace PERSTAT.Controllers
         // GET: Locations/Create
         public ActionResult Create()
         {
+
             ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
-            ViewData["CountyId"] = new SelectList(_context.Counties, "Id", "CountyName");
+
+            var betterCounty = _context.Counties.OrderBy(c => c.CountyName);
+            ViewData["CountyId"] = new SelectList(betterCounty, "Id", "CountyName");
             return View();
         }
         [Authorize]
@@ -80,7 +83,9 @@ namespace PERSTAT.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
-                ViewData["CountyId"] = new SelectList(_context.Counties, "Id", "CountyName");
+                var betterCounty = _context.Counties.OrderBy(c => c.CountyName);
+                ViewData["CountyId"] = new SelectList(betterCounty, "Id", "CountyName");
+
                 return View(location);
             }
             catch
@@ -103,7 +108,10 @@ namespace PERSTAT.Controllers
                 return NotFound();
             }
             ViewData["StateId"] = new SelectList(_context.States, "StateId", "StateName");
-            ViewData["CountyId"] = new SelectList(_context.Counties, "Id", "CountyName");
+
+            var betterCounty = _context.Counties.OrderBy(c => c.CountyName);
+            ViewData["CountyId"] = new SelectList(betterCounty, "Id", "CountyName");
+
             return View(location);
         }
 

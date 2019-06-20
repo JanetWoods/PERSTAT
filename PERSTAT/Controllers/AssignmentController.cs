@@ -125,11 +125,12 @@ namespace PERSTAT.Controllers
                     LocationString = s.State.StateShort + " " + s.LocationCity + " ( " + s.LocationDetail + ")"
                 }).ToList();
 
-            var detailedPerson = _context.People
+            var detailedPerson = _context.People.OrderBy(p => p.NameLast)
+                .ThenBy(p => p.NameFirst)
                 .Include(p => p.Organization).Select(i => new
                 {
                     PeopleId = i.Id,
-                    PeopleString = i.NameFirst + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
+                    PeopleString = i.NameLast + ", " + i.NameFirst + " ( " + i.Organization.OrganizationName + ")"
                 }).ToList();
             var detailedMission = _context.Missions.Select(m => new
             {

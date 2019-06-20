@@ -13,14 +13,15 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.LocationCity)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LocationDetail)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.State)
-            </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.County)
             </th>
@@ -34,20 +35,20 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.State.StateShort)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.LocationCity)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LocationDetail)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.State.StateShort)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.County.CountyName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.LocationId">Edit</a> 
-                   ||
+                <a asp-action="Edit" asp-route-id="@item.LocationId">Edit</a>
+                ||
                 <a asp-action="Delete" asp-route-id="@item.LocationId">Delete</a>
             </td>
         </tr>

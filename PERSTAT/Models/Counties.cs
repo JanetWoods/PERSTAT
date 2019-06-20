@@ -12,6 +12,8 @@ namespace PERSTAT.Models
         [Key]
         [Required]
         public int Id { get; set; }
+
+        [Display(Name="County")]
         public string CountyName { get; set; }
 
         public int StateId { get; set; }
