@@ -7,7 +7,7 @@
 <h1>All Current Assignments</h1>
 
 <p>
-    <a asp-action="Create">Add an assignment</a>
+    <a asp-action="Create" asp-controller="Assignment" >Add an assignment</a>
 </p>
 <table class="table">
     <thead>
@@ -54,8 +54,10 @@
                 </a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Location.LocationCity),
-                @Html.DisplayFor(modelItem => item.Location.LocationDetail)
+                <a asp-action="GetPeopleByLocation" asp-controller="Assignment" asp-route-id="@item.LocationId">
+                    @Html.DisplayFor(modelItem => item.Location.LocationCity),
+                    @Html.DisplayFor(modelItem => item.Location.LocationDetail)
+                    </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateStart)
