@@ -74,18 +74,20 @@ namespace PERSTAT.Controllers
         [Authorize]
         public IActionResult Create()
         {
-            var detailedOrg = _context.Organization
+            var detailedOrg = _context.Organization.OrderBy(o => o.OrganizationName).ThenBy(o => o.State.StateShort)
                 .Include(p => p.State).Select(s => new
                 {
                     OrganizationId = s.OrganizationId,
                     StateShort = s.OrganizationName + " - " + s.State.StateShort
                 }).ToList();
 
+            var betterStatus = _context.Status.OrderBy(s => s.StatusName);
 
             ViewData["OrganizationId"] = new SelectList(detailedOrg, "OrganizationId", "StateShort");
 
-            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "StatusName");
-           return View();
+            ViewData["StatusId"] = new SelectList(betterStatus, "Id", "StatusName");
+
+            return View();
         }
 
         // POST: People/Create
@@ -99,7 +101,7 @@ namespace PERSTAT.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            var detailedPerson = _context.Organization
+            var detailedPerson = _context.Organization.OrderBy(o => o.OrganizationName).ThenBy(o => o.State.StateShort)
                .Include(p => p.State).Select(s => new
                {
                    OrganizationId = s.OrganizationId,
@@ -126,8 +128,17 @@ namespace PERSTAT.Controllers
             {
                 return NotFound();
             }
-            ViewData["OrganizationId"] = new SelectList(_context.Organization, "OrganizationId", "OrganizationName", person.OrganizationId);
-            ViewData["StatusId"] = new SelectList(_context.Status, "Id", "StatusName", person.StatusId);
+            var detailedOrg = _context.Organization.OrderBy(o => o.OrganizationName).ThenBy(o => o.State.StateShort)
+                  .Include(p => p.State).Select(s => new
+                  {
+                      OrganizationId = s.OrganizationId,
+                      StateShort = s.OrganizationName + " - " + s.State.StateShort
+                  }).ToList();
+
+            ViewData["OrganizationId"] = new SelectList(detailedOrg, "OrganizationId", "StateShort");
+            var betterStatus = _context.Status.OrderBy(s => s.StatusName);
+
+            ViewData["StatusId"] = new SelectList(betterStatus, "Id", "StatusName", person.StatusId);
             return View(person);
         }
 

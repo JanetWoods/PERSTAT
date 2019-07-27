@@ -1,22 +1,17 @@
 ﻿@model IEnumerable<PERSTAT.Models.Assignment>
 
 @{
-    ViewData["Title"] = "GetPeopleByMission";
+    ViewData["Title"] = "GetPeopleByLocation";
 }
 
-<h1>All Personnel Support for This Mission</h1>
+<h1>Everyone at This Location</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.People)
-            </th>
-            <th>
-                Status
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Mission)
@@ -28,6 +23,9 @@
                 @Html.DisplayNameFor(model => model.DateEnd)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Incident)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Location)
             </th>
             <th></th>
@@ -37,15 +35,12 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.People.Title)
                 @Html.DisplayFor(modelItem => item.People.NameFirst)
                 @Html.DisplayFor(modelItem => item.People.NameLast)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.People.Status.StatusName)
-            </td>
-            <td><strong>
                 @Html.DisplayFor(modelItem => item.Mission.MissionTitle)
-                </strong>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateStart)
@@ -54,10 +49,11 @@
                 @Html.DisplayFor(modelItem => item.DateEnd)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Location.State)
                 @Html.DisplayFor(modelItem => item.Location.LocationCity)
+                @Html.DisplayFor(modelItem => item.Location.LocationDetail)
             </td>
             <td>
+                <a asp-action="Edit" asp-route-id="@item.AssignmentId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.AssignmentId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.AssignmentId">Delete</a>
             </td>

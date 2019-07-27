@@ -94,6 +94,25 @@ namespace PERSTAT.Controllers
             }
             return View(await groupByM.ToListAsync());
         }
+        public async Task<IActionResult> GetPeopleByLocation(int id)
+        {
+            var groupByM = _context.Assignment
+                .Include(p => p.People)
+                .Include(p => p.Mission)
+                .Include(p => p.Location)
+                .Include(p => p.People.Status)
+                .Include(p => p.People.Organization)
+                .Where(p => p.LocationId == id && p.DateEnd > (DateTime.Now).AddDays(-1))
+                .OrderByDescending(p => p.DateEnd);
+
+            var count = groupByM.Count();
+
+            if (groupByM == null)
+            {
+                return NotFound();
+            }
+            return View(await groupByM.ToListAsync());
+        }
 
         // GET: Assignment/Create
         [Authorize]
@@ -106,11 +125,12 @@ namespace PERSTAT.Controllers
                     LocationString = s.State.StateShort + " " + s.LocationCity + " ( " + s.LocationDetail + ")"
                 }).ToList();
 
-            var detailedPerson = _context.People
+            var detailedPerson = _context.People.OrderBy(p => p.NameLast)
+                .ThenBy(p => p.NameFirst)
                 .Include(p => p.Organization).Select(i => new
                 {
                     PeopleId = i.Id,
-                    PeopleString = i.NameFirst + " " + i.NameLast + " ( " + i.Organization.OrganizationName + ")"
+                    PeopleString = i.NameLast + ", " + i.NameFirst + " ( " + i.Organization.OrganizationName + ")"
                 }).ToList();
             var detailedMission = _context.Missions.Select(m => new
             {

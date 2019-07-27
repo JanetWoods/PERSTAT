@@ -20,6 +20,7 @@ namespace PERSTAT.Models
         public string OrganizationStreet2 { get; set; }
 
         public string City { get; set; }
+        [Display(Name="State")]
         public int StateId { get; set; }
 
         [Display(Name = "State")]
