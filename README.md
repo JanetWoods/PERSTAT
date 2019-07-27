@@ -1,1 +1,1 @@
-![ERD.png](C:\Users\Janet\source\repos\perstat\PERSTAT\ERD.png)
+![ERD.png](C:/Users/Janet/source/repos/perstat/PERSTAT/ERD.png)
