@@ -10,7 +10,7 @@
 
 #### Once you have the organization and statuses that you need, use the drop down lists in the add people form so that personnel statistics will be automatically tracked.
 
-<img src="PERSTAT\images\AddPerson.PNG" style="max-width: 45%; max-height: 60%;"/>
+<img src="PERSTAT\images\AddPerson.PNG" style="width:40%; height:60%;"/>
 
 #### If a person's status or organization changes, edit that person. Future statistics including that person will reflect the new status and organization.
 <img src="PERSTAT\images\EditPerson.PNG"/>
