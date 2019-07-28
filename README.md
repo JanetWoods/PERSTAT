@@ -2,7 +2,7 @@
 
 [View the deployed app](https://perstat20190728125514.azurewebsites.net/)
 #### What makes it flexible?
-# Add People and along with thier status and organizationID. When they are on missions you will be able to quickly and easily see lists based on status, mission, or location.
+#### Add People and along with thier status and organizationID. When they are on missions you will be able to quickly and easily see lists based on status, mission, or location.
 #### The assignments view show all personnel currently on assignment.
 
 #### Don't see the status you need?  Add a new status.  Don't see the organization you need?  Add one.
