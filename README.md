@@ -7,11 +7,11 @@
 
 # Don't see the status you need?  Add a new status.  Don't see the organization you need?  Add one.
 
-# Once you have the organization and statuses that you need, use the drop down lists in the add people form so that personnel statistics will be automatically tracked.
+# Once you have the organization and statuses that you need, use the drop down lists in the add people form so that personnel statistics will be automatically tracked.#
 
-<img src="PERSTAT\images\AddPerson.png"/>
+<img src="PERSTAT\images\AddPerson.PNG"/>
 
-# If a person's status or organization changes, edit that person. Future statistics including that person will reflect the new status and organization.
+# If a person's status or organization changes, edit that person. Future statistics including that person will reflect the new status and organization.#
 <img src="PERSTAT\images\EditPerson.png"/>
 
 # If the location you need is not in the list, add it.
