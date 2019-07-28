@@ -27,4 +27,4 @@
 
 
 # How all the data is related:
-<img src="PERSTAT\image\ERD.PNG"/>
+<img src="PERSTAT\images\ERD.PNG"/>
