@@ -7,24 +7,24 @@
 
 # Don't see the status you need?  Add a new status.  Don't see the organization you need?  Add one.
 
-# Once you have the organization and statuses that you need, use the drop down lists in the add people form so that personnel statistics will be automatically tracked.#
+# Once you have the organization and statuses that you need, use the drop down lists in the add people form so that personnel statistics will be automatically tracked.
 
 <img src="PERSTAT\images\AddPerson.PNG"/>
 
-# If a person's status or organization changes, edit that person. Future statistics including that person will reflect the new status and organization.#
-<img src="PERSTAT\images\EditPerson.png"/>
+# If a person's status or organization changes, edit that person. Future statistics including that person will reflect the new status and organization.
+<img src="PERSTAT\images\EditPerson.PNG"/>
 
 # If the location you need is not in the list, add it.
-<img src="PERSTAT\images\linkToAddLocation.png"/>
-<img src="PERSTAT\images\AddLocation.png"/>
+<img src="PERSTAT\images\linkToAddLocation.PNG"/>
+<img src="PERSTAT\images\AddLocation.PNG"/>
 
 # If you need to edit the location details (or correct the county maybe), edit it.
-<img src="PERSTAT\images\EditLocation.png"/>
+<img src="PERSTAT\images\EditLocation.PNG"/>
 
 # Enter new assignments from the Current Assignments view.
-<img src="PERSTAT\images\AddAnAssignmentLink.png"/>
-<img src="PERSTAT\images\AddingAnAssignment.png"/>
+<img src="PERSTAT\images\AddAnAssignmentLink.PNG"/>
+<img src="PERSTAT\images\AddingAnAssignment.PNG"/>
 
 
 # How all the data is related:
-<img src="PERSTAT\ERD.png"/>
+<img src="PERSTAT\ERD.PNG"/>
