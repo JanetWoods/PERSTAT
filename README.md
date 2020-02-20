@@ -1,6 +1,8 @@
 ## Welcome to PERSTAT, a flexible Personnel Status Reporting Tool
 
-[View the deployed app](https://perstat20190728125514.azurewebsites.net/)
+##### Note: it is no longer deployed on Azure ($$).
+##### It was developed in Visual Studio with C#.
+
 #### What makes it flexible?
 
 #### Add People and along with thier status and organizationID. When they are on missions you will be able to quickly and easily see lists based on status, mission, or location.
